@@ -4,15 +4,14 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-      "start": "node index"
+        "start": "node index"
     },
     "author": "",
     "license": "ISC",
     "dependencies": {
-      "asciiart-logo": "^0.2.6",
-      "console.table": "^0.10.0",
-      "inquirer": "8.2.4",
-      "mysql2": "^2.1.0"
+        "asciiart-logo": "^0.2.6",
+        "console.table": "^0.10.0",
+        "inquirer": "8.2.4",
+        "mysql2": "^2.3.3"
     }
-  }
-  
+}
