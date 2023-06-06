@@ -23,6 +23,7 @@ const mainMenu = () => {
       message: "What would you like to do?",
       choices: [
         "View all departments",
+        "View all employees",
         "View all employees by department",
         "View all employees by manager",
         "Add department",
@@ -36,6 +37,9 @@ const mainMenu = () => {
     switch (answer.action) {
       case "View all departments":
         viewAllDepartments();
+        break;
+      case "View all employees":
+        viewAllEmployees();
         break;
       case "View all employees by department":
         viewEmployeesByDepartment();
@@ -79,5 +83,72 @@ const viewAllDepartments = () => {
     }
     console.table(rows);
     mainMenu();
+  });
+};
+
+const viewAllEmployees = () => {
+  const sql = `SELECT * FROM employee`;
+  db.query(sql, (err, rows) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.table(rows);
+    mainMenu();
+  });
+};
+
+const viewEmployeesByDepartment = () => {
+  const sql = `
+    SELECT employee.id, employee.first_name, employee.last_name, department.department_name 
+    FROM employee
+    INNER JOIN role ON employee.role_id = role.id
+    INNER JOIN department ON role.department_id = department.id
+    ORDER BY department.department_name, employee.last_name, employee.first_name
+  `;
+  db.query(sql, (err, rows) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.table(rows);
+    mainMenu();
+  });
+};
+
+const viewEmployeesByManager = () => {
+  const sql = `
+    SELECT employee.id, employee.first_name, employee.last_name, CONCAT(manager.first_name, ' ', manager.last_name) AS manager_name
+    FROM employee
+    LEFT JOIN employee AS manager ON employee.manager_id = manager.id
+    ORDER BY manager_name, employee.last_name, employee.first_name
+  `;
+  db.query(sql, (err, rows) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.table(rows);
+    mainMenu();
+  });
+};
+
+const addDepartment = () => {
+  prompt([
+    {
+      type: "input",
+      name: "department_name",
+      message: "Enter the name of the department:",
+    },
+  ]).then(answer => {
+    const sql = `INSERT INTO department (department_name) VALUES (?)`;
+    db.query(sql, [answer.department_name], (err, result) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      console.log(`Department '${answer.department_name}' added successfully.`);
+      mainMenu();
+    });
   });
 };
