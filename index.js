@@ -215,8 +215,7 @@ const addEmployee = () => {
       name: "manager_id",
       message: "Enter the new employee's manager ID:"
     },
-  ])
-  .then(input => {
+  ]).then(input => {
     const { first_name, last_name, role_id, manager_id } = input;
     const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
     db.query(sql, [first_name, last_name, role_id, manager_id], (err) => {
@@ -254,8 +253,7 @@ const updateEmployeeRole = () => {
         return "Invalid input.";
       }
     }
-  ])
-    .then(answer => {
+  ]).then(answer => {
       const { employee_id, role_id } = answer;
       const checkRole = "SELECT * FROM role WHERE id = ?";
       db.query(checkRole, [role_id], (roleCheckErr, roleCheckResult) => {
@@ -264,7 +262,7 @@ const updateEmployeeRole = () => {
           return;
         }
         if (roleCheckResult.length === 0) {
-          console.log(`Role with ID ${role_id} does not exist.`);
+          console.log(`Role ID ${role_id} does not exist.`);
           mainMenu();
         } else {
           const updateSql = "UPDATE employee SET role_id = ? WHERE id = ?";
