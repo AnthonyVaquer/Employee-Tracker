@@ -14,7 +14,6 @@ db.connect(function (err) {
   if (err) throw err;
 });
 
-
 const mainMenu = () => {
   prompt([
     {
@@ -60,12 +59,8 @@ const mainMenu = () => {
         updateEmployeeRole();
         break;
       case "Exit":
-        console.log("Exiting program...");
+        console.log("Exiting the program");
         db.end();
-        break;
-      default:
-        console.log("Invalid option selected.");
-        mainMenu();
         break;
     }
   });
@@ -157,29 +152,47 @@ const addRole = () => {
   prompt([
     {
       type: "input",
-      name: "role_name",
+      name: "title",
       message: "Enter the name of the new role:",
     },
     {
-      type: "input",
-      name: "role_name",
+      type: "number",
+      name: "salary",
       message: "Enter the salary of the new role:",
+      validate: value => {
+        if (Number.isInteger(value)) {
+          return true;
+        }
+        return "Please enter a number.";
+      },
+    },
+    {
+      type: "number",
+      name: "department_id",
+      message: "Enter the department ID for the new role:",
+      validate: value => {
+        if (Number.isInteger(value)) {
+          return true;
+        }
+        return "Please enter a valid department ID.";
+      },
     },
   ]).then(answer => {
-    const sql = `INSERT INTO role (role_name) VALUES (?)`;
-    db.query(sql, [answer.department_name], (err) => {
+    const { title, salary, department_id } = answer;
+    const sql = "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)";
+    db.query(sql, [title, salary, department_id], (err) => {
       if (err) {
         console.error(err);
         return;
       }
-      console.log(`Role '${answer.role_name}' added.`);
+      console.log(`Role '${answer.title}' added.`);
       mainMenu();
     });
   });
 };
 
 
-// still need to properly implement is_manager input
+// want to implement is_manager input
 const addEmployee = () => {
   prompt ([
     {
@@ -216,3 +229,58 @@ const addEmployee = () => {
     });
   });
 }
+
+const updateEmployeeRole = () => {
+  prompt([
+    {
+      type: "input",
+      name: "employee_id",
+      message: "Enter the employee's ID:",
+      validate: value => {
+        if (Number.isInteger(parseInt(value))) {
+          return true;
+        }
+        return "Invalid input.";
+      }
+    },
+    {
+      type: "input",
+      name: "role_id",
+      message: "Enter ID of the new role:",
+      validate: value => {
+        if (Number.isInteger(parseInt(value))) {
+          return true;
+        }
+        return "Invalid input.";
+      }
+    }
+  ])
+    .then(answer => {
+      const { employee_id, role_id } = answer;
+      const checkRole = "SELECT * FROM role WHERE id = ?";
+      db.query(checkRole, [role_id], (roleCheckErr, roleCheckResult) => {
+        if (roleCheckErr) {
+          console.error(roleCheckErr);
+          return;
+        }
+        if (roleCheckResult.length === 0) {
+          console.log(`Role with ID ${role_id} does not exist.`);
+          mainMenu();
+        } else {
+          const updateSql = "UPDATE employee SET role_id = ? WHERE id = ?";
+          db.query(updateSql, [role_id, employee_id], (updateErr, updateResult) => {
+            if (updateErr) {
+              console.error(updateErr);
+              return;
+            }
+            if (updateResult.affectedRows === 0) {
+              console.log(`Employee ID not found.`);
+            } else {
+              console.log(`Role ID has successfully been updated.`);
+            }
+            mainMenu();
+          });
+        }
+      });
+    });
+};
