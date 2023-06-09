@@ -138,7 +138,7 @@ const addDepartment = () => {
     {
       type: "input",
       name: "department_name",
-      message: "Enter the name of the department:",
+      message: "Enter the name of the new department:",
     },
   ]).then(answer => {
     const sql = `INSERT INTO department (department_name) VALUES (?)`;
@@ -147,8 +147,45 @@ const addDepartment = () => {
         console.error(err);
         return;
       }
-      console.log(`Department '${answer.department_name}' added successfully.`);
+      console.log(`Department '${answer.department_name}' added.`);
       mainMenu();
     });
   });
 };
+
+const addEmployee = () => {
+  prompt ([
+    {
+      type: "input",
+      name: "first_name",
+      message: "Enter the new employee's first name:"
+    },
+    {
+      type: "input",
+      name: "last_name",
+      message: "Enter the new employee's last name:"
+    },
+    {
+      type: "input",
+      name: "role_id",
+      message: "Enter the new employee's role ID:"
+    },
+    {
+      type: "input",
+      name: "manager_id",
+      message: "Enter the new employee's manager ID:"
+    },
+  ])
+  .then(input => {
+    const { first_name, last_name, role_id, manager_id } = input;
+    const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
+    db.query(sql, [first_name, last_name, role_id, manager_id], (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      console.log(`Employee '${first_name} ${last_name}' added successfully.`);
+      mainMenu();
+    });
+  });
+}
