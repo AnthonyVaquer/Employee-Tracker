@@ -142,7 +142,7 @@ const addDepartment = () => {
     },
   ]).then(answer => {
     const sql = `INSERT INTO department (department_name) VALUES (?)`;
-    db.query(sql, [answer.department_name], (err, result) => {
+    db.query(sql, [answer.department_name], (err) => {
       if (err) {
         console.error(err);
         return;
@@ -153,6 +153,33 @@ const addDepartment = () => {
   });
 };
 
+const addRole = () => {
+  prompt([
+    {
+      type: "input",
+      name: "role_name",
+      message: "Enter the name of the new role:",
+    },
+    {
+      type: "input",
+      name: "role_name",
+      message: "Enter the salary of the new role:",
+    },
+  ]).then(answer => {
+    const sql = `INSERT INTO role (role_name) VALUES (?)`;
+    db.query(sql, [answer.department_name], (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      console.log(`Role '${answer.role_name}' added.`);
+      mainMenu();
+    });
+  });
+};
+
+
+// still need to properly implement is_manager input
 const addEmployee = () => {
   prompt ([
     {
@@ -184,7 +211,7 @@ const addEmployee = () => {
         console.error(err);
         return;
       }
-      console.log(`Employee '${first_name} ${last_name}' added successfully.`);
+      console.log(`Employee '${first_name} ${last_name}' added.`);
       mainMenu();
     });
   });
