@@ -2,7 +2,7 @@ const connect = require("./db/connection.js");
 const { prompt } = require("inquirer");
 const mysql = require('mysql2');
 
-
+// create db connection
 const db = mysql.createConnection({
   host: "127.0.0.1",
   user: "root",
@@ -14,6 +14,8 @@ db.connect(function (err) {
   if (err) throw err;
 });
 
+
+// run list of user choices in terminal
 const mainMenu = () => {
   prompt([
     {
@@ -68,7 +70,7 @@ const mainMenu = () => {
 
 mainMenu ()
 
-
+// display table of all departments
 const viewAllDepartments = () => {
   const sql = `SELECT * FROM department`;
   db.query(sql, (err, rows) => {
@@ -81,6 +83,8 @@ const viewAllDepartments = () => {
   });
 };
 
+
+// display table of all employees w/ role_id and manager_id
 const viewAllEmployees = () => {
   const sql = `SELECT * FROM employee`;
   db.query(sql, (err, rows) => {
@@ -93,6 +97,7 @@ const viewAllEmployees = () => {
   });
 };
 
+// display table of all employees and their department
 const viewEmployeesByDepartment = () => {
   const sql = `
     SELECT employee.id, employee.first_name, employee.last_name, department.department_name 
@@ -111,6 +116,8 @@ const viewEmployeesByDepartment = () => {
   });
 };
 
+
+// displays all employees and their corresponding manager_id
 const viewEmployeesByManager = () => {
   const sql = `
     SELECT employee.id, employee.first_name, employee.last_name, CONCAT(manager.first_name, ' ', manager.last_name) AS manager_name
@@ -128,6 +135,8 @@ const viewEmployeesByManager = () => {
   });
 };
 
+
+// create new department
 const addDepartment = () => {
   prompt([
     {
@@ -148,6 +157,8 @@ const addDepartment = () => {
   });
 };
 
+
+// create new role
 const addRole = () => {
   prompt([
     {
@@ -229,6 +240,8 @@ const addEmployee = () => {
   });
 }
 
+
+// updates an employee's role
 const updateEmployeeRole = () => {
   prompt([
     {
