@@ -244,6 +244,7 @@ const addEmployee = () => {
 // updates an employee's role
 const updateEmployeeRole = () => {
   prompt([
+    // user inputs the employee's ID and the desired role ID
     {
       type: "input",
       name: "employee_id",
@@ -275,7 +276,7 @@ const updateEmployeeRole = () => {
           return;
         }
         if (roleCheckResult.length === 0) {
-          console.log(`Role ID ${role_id} does not exist.`);
+          console.log("Invalid input.");
           mainMenu();
         } else {
           const updateSql = "UPDATE employee SET role_id = ? WHERE id = ?";
@@ -285,9 +286,9 @@ const updateEmployeeRole = () => {
               return;
             }
             if (updateResult.affectedRows === 0) {
-              console.log(`Employee ID not found.`);
+              console.log("Invalid input.");
             } else {
-              console.log(`Role ID has successfully been updated.`);
+              console.log("Role ID has been updated.");
             }
             mainMenu();
           });
